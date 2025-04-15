@@ -2,8 +2,13 @@ import 'package:flutter/material.dart';
 
 class OnboardingPage3 extends StatelessWidget {
   final PageController controller;
+  final VoidCallback onDone;
 
-  const OnboardingPage3({super.key, required this.controller});
+  const OnboardingPage3({
+    super.key,
+    required this.controller,
+    required this.onDone,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +27,7 @@ class OnboardingPage3 extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           Image.asset(
-            'assets/images/phone_check.jpg', // ✅ Make sure the image exists in assets
+            'assets/images/phone_check.jpg',
             height: 250,
           ),
           const SizedBox(height: 32),
@@ -31,7 +36,7 @@ class OnboardingPage3 extends StatelessWidget {
               width: double.infinity,
               padding: const EdgeInsets.all(24),
               decoration: const BoxDecoration(
-                color: Color(0xFF6D8B7F), // ✅ Soft green background
+                color: Color(0xFF6D8B7F),
                 borderRadius: BorderRadius.vertical(top: Radius.circular(40)),
               ),
               child: Column(
@@ -58,7 +63,8 @@ class OnboardingPage3 extends StatelessWidget {
                     children: [
                       ElevatedButton(
                         onPressed: () {
-                          Navigator.pushReplacementNamed(context, '/auth'); // ✅ Go to auth screen (Sign In / Sign Up)
+                          print("🚀 Get Started clicked");
+                          onDone();
                         },
                         style: ElevatedButton.styleFrom(
                           foregroundColor: Colors.black,
@@ -77,7 +83,7 @@ class OnboardingPage3 extends StatelessWidget {
                       const SizedBox(width: 8),
                       const CircleAvatar(
                         radius: 6,
-                        backgroundColor: Color(0xFFD8BFA2), // ✅ active dot
+                        backgroundColor: Color(0xFFD8BFA2),
                       ),
                     ],
                   ),

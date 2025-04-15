@@ -1,7 +1,86 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-class SignUpScreen extends StatelessWidget {
+class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
+
+  @override
+  State<SignUpScreen> createState() => _SignUpScreenState();
+}
+
+class _SignUpScreenState extends State<SignUpScreen> {
+  final _usernameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
+
+  final _auth = FirebaseAuth.instance;
+  final _firestore = FirebaseFirestore.instance;
+
+  bool _isLoading = false;
+
+  void _signUp() async {
+    final username = _usernameController.text.trim();
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+    final confirmPassword = _confirmPasswordController.text.trim();
+
+    if (username.isEmpty || email.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
+      _showError("Please fill all fields");
+      return;
+    }
+
+    if (password != confirmPassword) {
+      _showError("Passwords do not match");
+      return;
+    }
+
+    try {
+      setState(() => _isLoading = true);
+
+      // Create user
+      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      // Save user info to Firestore
+      await _firestore.collection("users").doc(userCredential.user!.uid).set({
+        "uid": userCredential.user!.uid,
+        "username": username,
+        "email": email,
+        "role": "learner", // default role, you can change later
+        "createdAt": FieldValue.serverTimestamp(),
+      });
+
+      // Navigate or show success
+      _showSuccess("Sign up successful!");
+
+    } on FirebaseAuthException catch (e) {
+      _showError(e.message ?? "An error occurred");
+    } finally {
+      setState(() => _isLoading = false);
+    }
+  }
+
+  void _showError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+  }
+
+  void _showSuccess(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message), backgroundColor: Colors.green));
+    // You can navigate to role selection screen or home screen here
+  }
+
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -86,40 +165,36 @@ class SignUpScreen extends StatelessWidget {
               ),
               const SizedBox(height: 24),
 
-              // Username
               _buildTextField(
                 icon: Icons.person,
                 hint: "Username",
+                controller: _usernameController,
               ),
-
-              // Email
               _buildTextField(
                 icon: Icons.alternate_email,
                 hint: "E-mail",
+                controller: _emailController,
               ),
-
-              // Password
               _buildTextField(
                 icon: Icons.lock_outline,
                 hint: "Password",
                 isObscure: true,
+                controller: _passwordController,
               ),
-
-              // Confirm Password
               _buildTextField(
                 icon: Icons.lock,
                 hint: "Confirm Password",
                 isObscure: true,
+                controller: _confirmPasswordController,
               ),
 
               const SizedBox(height: 24),
 
-              // Sign Up Button
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(horizontal: 8),
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: _isLoading ? null : _signUp,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF8FA99B),
                     foregroundColor: Colors.white,
@@ -128,13 +203,14 @@ class SignUpScreen extends StatelessWidget {
                     ),
                     padding: const EdgeInsets.symmetric(vertical: 14),
                   ),
-                  child: const Text("Sign up"),
+                  child: _isLoading
+                      ? const CircularProgressIndicator(color: Colors.white)
+                      : const Text("Sign up"),
                 ),
               ),
 
               const SizedBox(height: 24),
 
-              // Divider with text
               Row(
                 children: const [
                   Expanded(child: Divider(thickness: 1)),
@@ -147,7 +223,7 @@ class SignUpScreen extends StatelessWidget {
               ),
               const SizedBox(height: 16),
 
-              // Google Button
+              // Google Sign-In Button (You can implement this later)
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(
@@ -163,8 +239,7 @@ class SignUpScreen extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                   ),
                 ),
               ),
@@ -178,11 +253,13 @@ class SignUpScreen extends StatelessWidget {
   Widget _buildTextField({
     required IconData icon,
     required String hint,
+    required TextEditingController controller,
     bool isObscure = false,
   }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: TextField(
+        controller: controller,
         obscureText: isObscure,
         decoration: InputDecoration(
           prefixIcon: Icon(icon, color: Color(0xFF7D9A8A)),

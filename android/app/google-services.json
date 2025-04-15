@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "259377931534",
+    "project_id": "my-project-a18ad",
+    "storage_bucket": "my-project-a18ad.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:259377931534:android:8b2cc3261f791fb956635f",
+        "android_client_info": {
+          "package_name": "com.example.spacecourseapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "259377931534-e251l4s9382h83b5ll4ngtkd0edarmj0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.spacecourseapp",
+            "certificate_hash": "b49eab4332ed2b437700815fa9a593e3c4f294f6"
+          }
+        },
+        {
+          "client_id": "259377931534-tc2npbl46bppv676830cm4oj64mgkkf5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCO5LuNGO_LT-c0HnVGpQqnI4f-FJz4118"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "259377931534-tc2npbl46bppv676830cm4oj64mgkkf5.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "259377931534-jj2ldimbjlpjlvc9n5hborjt7head14l.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.spacecourseApp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

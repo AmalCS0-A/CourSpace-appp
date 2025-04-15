@@ -1,7 +1,46 @@
 import 'package:flutter/material.dart';
+import 'package:spacecourse_app/services/auth_service.dart'; // import your AuthService file
+import 'home_screen.dart';  // replace with your actual home screen
 
-class SignInScreen extends StatelessWidget {
+class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
+
+  @override
+  State<SignInScreen> createState() => _SignInScreenState();
+}
+
+class _SignInScreenState extends State<SignInScreen> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final AuthService _authService = AuthService();
+
+  bool _isLoading = false;
+  String? _errorMessage;
+
+  void _handleSignIn() async {
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
+    final email = _emailController.text.trim();
+    final password = _passwordController.text;
+
+    final error = await _authService.signIn(email: email, password: password);
+
+    if (error != null) {
+      setState(() {
+        _errorMessage = error;
+        _isLoading = false;
+      });
+    } else {
+      Navigator.pushReplacement(
+        // ignore: use_build_context_synchronously
+        context,
+        MaterialPageRoute(builder: (_) => const HomeScreen()),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,12 +90,17 @@ class SignInScreen extends StatelessWidget {
                       ),
                     ),
                     Expanded(
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        alignment: Alignment.center,
-                        child: const Text(
-                          "Sign up",
-                          style: TextStyle(color: Colors.grey, fontSize: 16),
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.pushNamed(context, '/signup');
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          alignment: Alignment.center,
+                          child: const Text(
+                            "Sign up",
+                            style: TextStyle(color: Colors.grey, fontSize: 16),
+                          ),
                         ),
                       ),
                     ),
@@ -86,27 +130,33 @@ class SignInScreen extends StatelessWidget {
               ),
               const SizedBox(height: 24),
 
-              // Email
               _buildTextField(
+                controller: _emailController,
                 icon: Icons.alternate_email,
                 hint: "E-mail",
               ),
-
-              // Password
               _buildTextField(
+                controller: _passwordController,
                 icon: Icons.lock_outline,
                 hint: "Password",
                 isObscure: true,
               ),
 
+              if (_errorMessage != null) ...[
+                const SizedBox(height: 12),
+                Text(
+                  _errorMessage!,
+                  style: const TextStyle(color: Colors.red),
+                ),
+              ],
+
               const SizedBox(height: 24),
 
               // Sign In Button
-              Container(
+              SizedBox(
                 width: double.infinity,
-                padding: const EdgeInsets.symmetric(horizontal: 8),
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: _isLoading ? null : _handleSignIn,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF8FA99B),
                     foregroundColor: Colors.white,
@@ -115,7 +165,11 @@ class SignInScreen extends StatelessWidget {
                     ),
                     padding: const EdgeInsets.symmetric(vertical: 14),
                   ),
-                  child: const Text("Sign in"),
+                  child: _isLoading
+                      ? const CircularProgressIndicator(
+                          color: Colors.white,
+                        )
+                      : const Text("Sign in"),
                 ),
               ),
 
@@ -134,11 +188,13 @@ class SignInScreen extends StatelessWidget {
               ),
               const SizedBox(height: 16),
 
-              // Google Button
+              // Google Button (optional integration)
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(
-                  onPressed: () {},
+                  onPressed: () {
+                    //  Add Google Sign-In logic
+                  },
                   icon: Image.asset(
                     'assets/images/Logo-google-icon.png',
                     height: 24,
@@ -150,8 +206,8 @@ class SignInScreen extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 24, vertical: 12),
                   ),
                 ),
               ),
@@ -163,6 +219,7 @@ class SignInScreen extends StatelessWidget {
   }
 
   Widget _buildTextField({
+    required TextEditingController controller,
     required IconData icon,
     required String hint,
     bool isObscure = false,
@@ -170,9 +227,10 @@ class SignInScreen extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: TextField(
+        controller: controller,
         obscureText: isObscure,
         decoration: InputDecoration(
-          prefixIcon: Icon(icon, color: Color(0xFF7D9A8A)),
+          prefixIcon: Icon(icon, color: const Color(0xFF7D9A8A)),
           suffixIcon: isObscure ? const Icon(Icons.visibility_off) : null,
           hintText: hint,
           hintStyle: const TextStyle(color: Colors.grey),

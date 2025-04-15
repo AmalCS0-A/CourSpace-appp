@@ -1,4 +1,5 @@
-package com.example.spacecourse_app
+package com.example.spacecourseapp 
+
 
 import io.flutter.embedding.android.FlutterActivity
 
