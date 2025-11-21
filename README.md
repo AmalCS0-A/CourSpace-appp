@@ -1,16 +1,48 @@
-# spacecourse_app
+SPACECOURSE is a mobile application built with Flutter and powered by Firebase.
+Its goal is to gather all programming, language, and professional courses in Algeria in one place, helping learners compare and choose the best option.
 
-A new Flutter project.
+The app includes two user roles:
 
-## Getting Started
+👤 Learners
 
-This project is a starting point for a Flutter application.
+Browse all available courses in Algeria
 
-A few resources to get you started if this is your first Flutter project:
+Filter by category, price (free/paid), location (online/offline), and more
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+View detailed course information and registration links
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Read and write ratings & reviews
+
+🧑‍💼 Course Owners (Contributors)
+
+Create an account as a course owner
+
+Add, modify, and manage their own courses
+
+Courses get reviewed manually before appearing in the app
+
+Designed to help small training centers and teachers reach more students
+
+⚙️ Technologies Used
+
+Flutter (Frontend)
+
+Firebase Authentication (Email + Google login)
+
+Firestore Database
+
+Secure Firestore rules with role-based access
+
+cloudinary (for images)
+
+Postman for backend testing
+
+🎯 Project Goals
+
+Build a unified platform for Algerian learners
+
+Make course comparison easier
+
+Give visibility to course owners
+
+Provide a clean, modern UI/UX (Figma-based design)
