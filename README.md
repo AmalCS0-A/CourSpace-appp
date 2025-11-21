@@ -1,4 +1,4 @@
-SPACECOURSE is a mobile application built with Flutter and powered by Firebase.
+CourSpace is a mobile application built with Flutter and powered by Firebase.
 Its goal is to gather all programming, language, and professional courses in Algeria in one place, helping learners compare and choose the best option.
 
 The app includes two user roles:
